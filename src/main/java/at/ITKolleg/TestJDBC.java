@@ -2,7 +2,7 @@ package at.ITKolleg;
 
 import java.sql.*;
 
-public class JdbcDemo {
+public class TestJDBC {
 
     public static void main(String[] args) {
         System.out.println("JDBC DEMO!");
@@ -10,50 +10,19 @@ public class JdbcDemo {
         //INSERT INTO `student` (`id`, `name`, `email`) VALUES (NULL, 'Test Test', 'test@test.test'), (NULL, 'Maria', 'maria@test.at');
 
         selectAllDemo();
-        insertStudentDemo("Name des Studenten", "Email@prov.at");
+        insertTestDemo("b", 4);
         selectAllDemo();
-        updateStudentDemo("Neuer Name", "neueemail@provider.at", 4);
+        updateStudentDemo("b", 2, 3);
         selectAllDemo();
-        deleteStudentDeom(5);
+        deleteStudentDeom(1);
         selectAllDemo();
-        findAllByNameLike("Test");
     }
 
-    private static void findAllByNameLike(String pattern) {
 
-        System.out.println("Find all by name DEMO mit JDBC");
-
-        String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
-        String user = "root";
-        String pwd = "";
-
-        try (Connection conn = DriverManager.getConnection(connectionUrl, user,pwd)){
-            System.out.println("Verbindung zur DB hergestellt!");
-
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM `student` WHERE `student`.`name` LIKE ?");
-            preparedStatement.setString(1, "%" + pattern + "%");
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()){
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                System.out.println("Student aus der DB: [ID] " + id + "[NAME]" + name + " [Email]" + email);
-
-            }
-
-
-
-        }catch (SQLException e){
-            System.out.println("Fehler bei Aufbau der Verbindung zur DB: " + e.getMessage());
-        }
-
-    }
-
-    public static void deleteStudentDeom(int studentID){
+    public static void deleteStudentDeom(int testid){
 
         System.out.println("DeELETE DEMO mit JDBC");
-        String sqlSelectAllPersono = "SELECT * FROM `student`";
+        String sqlSelectAllPersono = "SELECT * FROM `testDemo`";
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
         String user = "root";
         String pwd = "";
@@ -62,11 +31,11 @@ public class JdbcDemo {
             System.out.println("Verbindung zur DB hergestellt!");
 
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    "DELETE FROM `student` WHERE `student`.`id` = ?"
+                    "DELETE FROM `testdemo` WHERE `testdemo`.`id` = ?"
             );
 
             try {
-                preparedStatement.setInt(1,studentID);
+                preparedStatement.setInt(1,testid);
                 int rowAffected = preparedStatement.executeUpdate();
                 System.out.println("anzahl der gelöschten Datensätze: " + rowAffected);
             }catch (SQLException ex){
@@ -79,10 +48,10 @@ public class JdbcDemo {
 
     }
 
-    public static  void updateStudentDemo(String neuerName, String neueEmail, int id){
+    public static  void updateStudentDemo(String neuesFach, int neueNote, int id){
 
         System.out.println("Update DEMO mit JDBC");
-        String sqlSelectAllPersono = "SELECT * FROM `student`";
+        String sqlSelectAllPersono = "SELECT * FROM `testdemo`";
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
         String user = "root";
         String pwd = "";
@@ -91,12 +60,12 @@ public class JdbcDemo {
             System.out.println("Verbindung zur DB hergestellt!");
 
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    "UPDATE `student` SET `name` = ?, `email` = ?  WHERE  `student`.`id` = ?"
+                    "UPDATE `testdemo` SET `fach` = ?, `note` = ?  WHERE  `testdemo`.`id` = ?"
             );
 
             try {
-                preparedStatement.setString(1,neuerName);
-                preparedStatement.setString(2,neueEmail);
+                preparedStatement.setString(1,neuesFach);
+                preparedStatement.setInt(2,neueNote);
                 preparedStatement.setInt(3,id);
                 int affectedRows = preparedStatement.executeUpdate();
                 System.out.println("Anzahl der aktualisierten Datensätze: " + affectedRows);
@@ -110,10 +79,10 @@ public class JdbcDemo {
 
     }
 
-    public static void insertStudentDemo(String name, String email){
+    public static void insertTestDemo(String fach, int note ){
 
         System.out.println("INSERT DEMO mit JDBC");
-        String sqlSelectAllPersono = "SELECT * FROM `student`";
+        String sqlSelectAllPersono = "SELECT * FROM `testdemo`";
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
         String user = "root";
         String pwd = "";
@@ -122,12 +91,12 @@ public class JdbcDemo {
             System.out.println("Verbindung zur DB hergestellt!");
 
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    "INSERT INTO `student` (`id`, `name`, `email`) VALUES (NULL, ?, ?)"
+                    "INSERT INTO `testdemo` (`id`, `fach`, `note`) VALUES (NULL, ?, ?)"
             );
 
             try {
-                preparedStatement.setString(1,name);
-                preparedStatement.setString(2,email);
+                preparedStatement.setString(1,fach);
+                preparedStatement.setInt(2,note);
                 int rowAffected = preparedStatement.executeUpdate();
                 System.out.println(rowAffected + "Datensetze eingefügt");
             }catch (SQLException ex){
@@ -142,21 +111,22 @@ public class JdbcDemo {
     public static void selectAllDemo(){
 
         System.out.println("Select DEMO mit JDBC");
-        String sqlSelectAllPersono = "SELECT * FROM `student`";
+        String sqlSelectAllPersono = "SELECT * FROM `testdemo`";
         String connectionUrl = "jdbc:mysql://localhost:3306/jdbcdemo";
         String user = "root";
         String pwd = "";
+
         try (Connection conn = DriverManager.getConnection(connectionUrl, user,pwd)){
             System.out.println("Verbindung zur DB hergestellt!");
 
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM `student`");
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM `testdemo`");
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()){
                 int id = rs.getInt("id");
-                String name = rs.getString("name");
-                String email = rs.getString("email");
-                System.out.println("Student aus der DB: [ID] " + id + "[NAME]" + name + " [Email]" + email);
+                String fach = rs.getString("Fach");
+                int note = rs.getInt("Note");
+                System.out.println("Student aus der DB: [ID] " + id + "[Fach]" + fach + " [Note]" + note);
 
             }
 
@@ -167,8 +137,6 @@ public class JdbcDemo {
         }
 
     }
-
-
 
 
 }
